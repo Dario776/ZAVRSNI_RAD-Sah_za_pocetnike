@@ -31,8 +31,10 @@ dependencies:
   audioplayers: ^6.4.0
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.3
   provider: ^6.1.4
   shared_preferences: ^2.5.3
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
@@ -44,6 +46,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/app-logo.png"
+  adaptive_icon_foreground: "assets/images/app-logo.png"
+  adaptive_icon_background: "#2D4136"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -59,8 +68,6 @@ flutter:
   assets:
     - assets/images/
     - assets/sounds/
-    - assets/data/
-    - assets/data/config.json
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

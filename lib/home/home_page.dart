@@ -37,21 +37,21 @@ class InfoPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 700),
+            constraints: const BoxConstraints(maxWidth: 1000),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 buildSectionHeader(context, '"Šah za početnike"'),
                 const SizedBox(height: 12),
                 Text(
-                  'Ova edukativna aplikacija pomaže novim igračima da nauče kretanje šahovskih figura.',
+                  'Ova edukativna aplikacija pomaže korisnicima da nauče kretanje šahovskih figura.',
                   style: Styles.textDefault(context),
                 ),
                 const SizedBox(height: 24),
-                buildSectionHeader(context, 'O projektu'),
+                buildSectionHeader(context, 'O aplikaciji'),
                 const SizedBox(height: 12),
                 Text(
-                  'Razvijena u sklopu završnog rada na Fakultetu elektrotehnike i računarstva '
+                  'Aplikacija je razvijena u sklopu završnog rada na Fakultetu elektrotehnike i računarstva '
                   'Sveučilišta u Zagrebu, ak. god. 2024./2025.',
                   style: Styles.textDefault(context),
                 ),
@@ -65,6 +65,67 @@ class InfoPage extends StatelessWidget {
                 Text(
                   'prof. dr. sc. Željka Car',
                   style: Styles.textDefault(context),
+                ),
+                const SizedBox(height: 24),
+                buildSectionHeader(context, 'Atribucije'),
+                const SizedBox(height: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('• Fontovi:', style: Styles.textDefault(context)),
+                    attributedLine(
+                      context,
+                      '  - OpenSans: ',
+                      'https://fonts.google.com/',
+                    ),
+                    attributedLine(
+                      context,
+                      '  - OpenDyslexic: ',
+                      'https://opendyslexic.org/',
+                    ),
+
+                    const SizedBox(height: 12),
+                    Text('• Slike:', style: Styles.textDefault(context)),
+                    attributedLine(
+                      context,
+                      '  - Šahovske figure: ',
+                      'https://greenchess.net/',
+                    ),
+                    attributedLine(
+                      context,
+                      '  - Ikone u postavkama: ',
+                      'https://www.flaticon.com/',
+                    ),
+                    attributedLine(
+                      context,
+                      '  - Logo: ',
+                      'https://www.freepik.com/',
+                    ),
+
+                    const SizedBox(height: 12),
+                    Text('• Zvukovi:', style: Styles.textDefault(context)),
+                    attributedLine(
+                      context,
+                      '  - Kretnja figure - button 17.wav by bubaproducer: ',
+                      'https://freesound.org/s/107135/',
+                    ),
+                    attributedLine(
+                      context,
+                      '  - Nedozvoljen potez - Error by Kastenfrosch: ',
+                      'https://freesound.org/s/521973/',
+                    ),
+                    attributedLine(
+                      context,
+                      '  - Reset razine - tile shuffle.wav by element4rt: ',
+                      'https://freesound.org/s/454848/',
+                    ),
+                    attributedLine(
+                      context,
+                      '  - Sljedeća razina - magic_game_win_success.wav by MLaudio: ',
+                      'https://freesound.org/s/615099/',
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ),
               ],
             ),
@@ -88,7 +149,6 @@ class HomePage extends StatelessWidget {
         leading: LayoutBuilder(
           builder: (context, constraints) {
             return IconButton(
-              enableFeedback: false,
               iconSize:
                   constraints.maxWidth > 1000
                       ? 60

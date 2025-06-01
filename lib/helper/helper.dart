@@ -1,8 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zavrsni/components/piece.dart';
-import 'dart:io';
 import 'dart:math';
-
 import 'package:zavrsni/styles.dart';
 
 String toChessCoords(num row, num col) {
@@ -10,6 +10,32 @@ String toChessCoords(num row, num col) {
   num rank = 8 - row;
   String file = files[col.toInt()];
   return '$file$rank';
+}
+
+Widget attributedLine(BuildContext context, String label, String url) {
+  return RichText(
+    text: TextSpan(
+      style: Styles.customColorText(
+        context,
+        Styles.textDefault(context),
+        false,
+      ),
+      children: [
+        TextSpan(text: label),
+        TextSpan(
+          text: url,
+          style: Styles.textDefault(context).copyWith(color: Colors.blue),
+          recognizer:
+              TapGestureRecognizer()
+                ..onTap =
+                    () => launchUrl(
+                      Uri.parse(url),
+                      mode: LaunchMode.externalApplication,
+                    ),
+        ),
+      ],
+    ),
+  );
 }
 
 Widget buildSectionHeader(BuildContext context, String title) {
@@ -57,6 +83,16 @@ abstract class AbstractBoard {
     : board = List.generate(8, (_) => List.filled(8, null));
 
   Goal generateDifficulty(int difficulty) {
+    if (difficulty <= 3)
+      return generateDifficulty1(difficulty);
+    else if (difficulty <= 7) {
+      return generateDifficulty2(difficulty);
+    } else {
+      return generateDifficulty3(difficulty);
+    }
+  }
+
+  Goal generateDifficulty1(int difficulty) {
     board = List.generate(8, (_) => List.filled(8, null));
     int whiteRow = 6;
     int whiteCol = Random().nextInt(8);
@@ -74,6 +110,160 @@ abstract class AbstractBoard {
       difficulty,
     );
   }
+
+  Goal generateDifficulty2(int difficulty) {
+    board = List.generate(8, (_) => List.filled(8, null));
+    int whiteRow = 6;
+    int whiteCol = Random().nextInt(8);
+
+    board[whiteRow][whiteCol] = ChessPiece(
+      type: pieceType,
+      isWhite: true,
+      imagePath: 'assets/images/white-${pieceType.name}.png',
+    );
+
+    List<ChessPieceType> types = ChessPieceType.values;
+    int placed = 0;
+
+    while (placed < 10) {
+      int r = Random().nextInt(8);
+      int c = Random().nextInt(8);
+
+      if (board[r][c] == null && !(r == whiteRow && c == whiteCol)) {
+        var type = types[Random().nextInt(types.length)];
+        board[r][c] = ChessPiece(
+          type: type,
+          isWhite: false,
+          imagePath: 'assets/images/black-${type.name}.png',
+        );
+        placed++;
+      }
+    }
+
+    return generateCheckpointsWithDifficulty(
+      board,
+      whiteRow,
+      whiteCol,
+      pieceType,
+      difficulty - 4,
+    );
+  }
+
+  Goal generateDifficulty3(int difficulty) {
+    board = List.generate(8, (_) => List.filled(8, null));
+    int whiteRow = 7;
+    int whiteCol = Random().nextInt(8);
+
+    board[whiteRow][whiteCol] = ChessPiece(
+      type: pieceType,
+      isWhite: true,
+      imagePath: 'assets/images/white-${pieceType.name}.png',
+    );
+
+    // Place 15-18 black pieces randomly
+    List<ChessPieceType> types = ChessPieceType.values;
+    int placed = 0;
+    int maxPieces = 15 + Random().nextInt(4); // up to 18
+
+    while (placed < maxPieces) {
+      int r = Random().nextInt(8);
+      int c = Random().nextInt(8);
+
+      if (board[r][c] == null && !(r == whiteRow && c == whiteCol)) {
+        var type = types[Random().nextInt(types.length)];
+        board[r][c] = ChessPiece(
+          type: type,
+          isWhite: false,
+          imagePath: 'assets/images/black-${type.name}.png',
+        );
+        placed++;
+      }
+    }
+
+    return generateSparseCheckpoints(
+      board,
+      whiteRow,
+      whiteCol,
+      pieceType,
+      difficulty - 8,
+    );
+  }
+}
+
+Goal generateSparseCheckpoints(
+  List<List<ChessPiece?>> board,
+  int startRow,
+  int startCol,
+  ChessPieceType pieceType,
+  int difficulty,
+) {
+  List<Point> path = [];
+  Set<String> visited = {};
+  int currentRow = startRow;
+  int currentCol = startCol;
+  Random random = Random();
+
+  int maxSteps = switch (difficulty) {
+    0 => 8 + random.nextInt(2),
+    1 => 9 + random.nextInt(2),
+    2 => 10 + random.nextInt(3),
+    3 => 12 + random.nextInt(3),
+    4 => 14 + random.nextInt(3),
+    5 => 16 + random.nextInt(3),
+    6 => 18 + random.nextInt(3),
+    7 => 20 + random.nextInt(3),
+    8 => 22 + random.nextInt(3),
+    _ => 26 + random.nextInt(3),
+  };
+
+  visited.add('$currentRow-$currentCol');
+
+  for (int i = 0; i < maxSteps; i++) {
+    List<List<int>> possibleMoves = calculatePossibleMoves(
+      board,
+      currentRow,
+      currentCol,
+      ChessPiece(
+        type: pieceType,
+        isWhite: true,
+        imagePath: 'assets/images/white-${pieceType.name}.png',
+      ),
+    );
+
+    possibleMoves.removeWhere(
+      (move) => visited.contains('${move[0]}-${move[1]}'),
+    );
+
+    if (possibleMoves.isEmpty) break;
+
+    List<int> move = possibleMoves[random.nextInt(possibleMoves.length)];
+
+    currentRow = move[0];
+    currentCol = move[1];
+    visited.add('$currentRow-$currentCol');
+
+    path.add(Point(currentRow, currentCol));
+
+    if (pieceType == ChessPieceType.pawn && currentRow == 0) break;
+  }
+
+  Set<int> chosenSteps = {};
+
+  while (chosenSteps.length < 5) {
+    chosenSteps.add(random.nextInt(path.length));
+  }
+
+  List<NumberPair> numberedCheckpoints = [];
+  int step = 1;
+
+  for (int i = 0; i < path.length; i++) {
+    if (chosenSteps.contains(i)) {
+      numberedCheckpoints.add(NumberPair(path[i], step));
+      step++;
+    }
+  }
+
+  return Goal(numberedCheckpoints, step - 1);
 }
 
 Goal generateCheckpointsWithDifficulty(
@@ -111,7 +301,6 @@ Goal generateCheckpointsWithDifficulty(
       ),
     );
 
-    // Remove visited
     possibleMoves.removeWhere(
       (move) => visited.contains('${move[0]}-${move[1]}'),
     );
@@ -137,18 +326,6 @@ class PawnBoard extends AbstractBoard {
   PawnBoard(super.pieceType);
 
   @override
-  Goal generateDifficulty(int difficulty) {
-    print("sad sam ovdje");
-    print(difficulty);
-    if (difficulty <= 3)
-      return super.generateDifficulty(difficulty);
-    else if (difficulty <= 7) {
-      return generateDifficulty2(difficulty);
-    } else {
-      return generateDifficulty3(difficulty);
-    }
-  }
-
   Goal generateDifficulty2(int difficulty) {
     board = List.generate(8, (_) => List.filled(8, null));
     int whiteRow = 6;
@@ -206,9 +383,10 @@ class PawnBoard extends AbstractBoard {
     );
   }
 
+  @override
   Goal generateDifficulty3(int difficulty) {
     board = List.generate(8, (_) => List.filled(8, null));
-    int whiteRow = 7;
+    int whiteRow = 6;
     int whiteCol = Random().nextInt(8);
     board[whiteRow][whiteCol] = ChessPiece(
       type: pieceType,
@@ -239,8 +417,9 @@ class PawnBoard extends AbstractBoard {
     );
 
     List<ChessPieceType> types = ChessPieceType.values;
+
     int placed = 3;
-    while (placed < 10) {
+    while (placed < 15) {
       int r = random.nextInt(8);
       int c = random.nextInt(8);
       if (board[r][c] == null && c != whiteCol && c != col1) {
@@ -254,7 +433,7 @@ class PawnBoard extends AbstractBoard {
       }
     }
 
-    return generateCheckpointsWithDifficulty(
+    return generateSparseCheckpoints(
       board,
       whiteRow,
       whiteCol,
@@ -266,395 +445,14 @@ class PawnBoard extends AbstractBoard {
 
 class KnightBoard extends AbstractBoard {
   KnightBoard(super.pieceType);
-
-  @override
-  Goal generateDifficulty(int difficulty) {
-    print("sad sam ovdje");
-    print(difficulty);
-    if (difficulty <= 3)
-      return super.generateDifficulty(difficulty);
-    else if (difficulty <= 7) {
-      return generateDifficulty2(difficulty);
-    } else {
-      return generateDifficulty3(difficulty);
-    }
-  }
-
-  Goal generateDifficulty2(int difficulty) {
-    board = List.generate(8, (_) => List.filled(8, null));
-    int whiteRow = 6;
-    int whiteCol = Random().nextInt(8);
-    board[whiteRow][whiteCol] = ChessPiece(
-      type: pieceType,
-      isWhite: true,
-      imagePath: 'assets/images/white-${pieceType.name}.png',
-    );
-
-    int row1 = whiteRow - 1 - random.nextInt(4);
-    int col1 = whiteCol;
-
-    board[row1][col1] = ChessPiece(
-      type: pieceType,
-      isWhite: false,
-      imagePath: 'assets/images/black-${pieceType.name}.png',
-    );
-
-    col1 =
-        (col1 == 0)
-            ? 1
-            : (col1 == 7)
-            ? 6
-            : (random.nextBool() ? col1 - 1 : col1 + 1);
-
-    board[row1][col1] = ChessPiece(
-      type: pieceType,
-      isWhite: false,
-      imagePath: 'assets/images/black-${pieceType.name}.png',
-    );
-
-    List<ChessPieceType> types = ChessPieceType.values;
-    int placed = 3;
-    while (placed < 10) {
-      int r = random.nextInt(8);
-      int c = random.nextInt(8);
-      if (board[r][c] == null && c != whiteCol && c != col1) {
-        var type = types[random.nextInt(types.length)];
-        board[r][c] = ChessPiece(
-          type: type,
-          isWhite: false,
-          imagePath: 'assets/images/black-${type.name}.png',
-        );
-        placed++;
-      }
-    }
-
-    return generateCheckpointsWithDifficulty(
-      board,
-      whiteRow,
-      whiteCol,
-      pieceType,
-      difficulty - 4,
-    );
-  }
-
-  Goal generateDifficulty3(int difficulty) {
-    board = List.generate(8, (_) => List.filled(8, null));
-    int whiteRow = 7;
-    int whiteCol = Random().nextInt(8);
-    board[whiteRow][whiteCol] = ChessPiece(
-      type: pieceType,
-      isWhite: true,
-      imagePath: 'assets/images/white-${pieceType.name}.png',
-    );
-
-    int row1 = whiteRow - 1 - random.nextInt(4);
-    int col1 = whiteCol;
-
-    board[row1][col1] = ChessPiece(
-      type: pieceType,
-      isWhite: false,
-      imagePath: 'assets/images/black-${pieceType.name}.png',
-    );
-
-    col1 =
-        (col1 == 0)
-            ? 1
-            : (col1 == 7)
-            ? 6
-            : (random.nextBool() ? col1 - 1 : col1 + 1);
-
-    board[row1][col1] = ChessPiece(
-      type: pieceType,
-      isWhite: false,
-      imagePath: 'assets/images/black-${pieceType.name}.png',
-    );
-
-    List<ChessPieceType> types = ChessPieceType.values;
-    int placed = 3;
-    while (placed < 10) {
-      int r = random.nextInt(8);
-      int c = random.nextInt(8);
-      if (board[r][c] == null && c != whiteCol && c != col1) {
-        var type = types[random.nextInt(types.length)];
-        board[r][c] = ChessPiece(
-          type: type,
-          isWhite: false,
-          imagePath: 'assets/images/black-${type.name}.png',
-        );
-        placed++;
-      }
-    }
-
-    return generateCheckpointsWithDifficulty(
-      board,
-      whiteRow,
-      whiteCol,
-      pieceType,
-      difficulty - 8,
-    );
-  }
 }
 
 class BishopBoard extends AbstractBoard {
   BishopBoard(super.pieceType);
-
-  @override
-  Goal generateDifficulty(int difficulty) {
-    print("sad sam ovdje");
-    print(difficulty);
-    if (difficulty <= 3)
-      return super.generateDifficulty(difficulty);
-    else if (difficulty <= 7) {
-      return generateDifficulty2(difficulty);
-    } else {
-      return generateDifficulty3(difficulty);
-    }
-  }
-
-  Goal generateDifficulty2(int difficulty) {
-    board = List.generate(8, (_) => List.filled(8, null));
-    int whiteRow = 6;
-    int whiteCol = Random().nextInt(8);
-    board[whiteRow][whiteCol] = ChessPiece(
-      type: pieceType,
-      isWhite: true,
-      imagePath: 'assets/images/white-${pieceType.name}.png',
-    );
-
-    int row1 = whiteRow - 1 - random.nextInt(4);
-    int col1 = whiteCol;
-
-    board[row1][col1] = ChessPiece(
-      type: pieceType,
-      isWhite: false,
-      imagePath: 'assets/images/black-${pieceType.name}.png',
-    );
-
-    col1 =
-        (col1 == 0)
-            ? 1
-            : (col1 == 7)
-            ? 6
-            : (random.nextBool() ? col1 - 1 : col1 + 1);
-
-    board[row1][col1] = ChessPiece(
-      type: pieceType,
-      isWhite: false,
-      imagePath: 'assets/images/black-${pieceType.name}.png',
-    );
-
-    List<ChessPieceType> types = ChessPieceType.values;
-    int placed = 3;
-    while (placed < 10) {
-      int r = random.nextInt(8);
-      int c = random.nextInt(8);
-      if (board[r][c] == null && c != whiteCol && c != col1) {
-        var type = types[random.nextInt(types.length)];
-        board[r][c] = ChessPiece(
-          type: type,
-          isWhite: false,
-          imagePath: 'assets/images/black-${type.name}.png',
-        );
-        placed++;
-      }
-    }
-
-    return generateCheckpointsWithDifficulty(
-      board,
-      whiteRow,
-      whiteCol,
-      pieceType,
-      difficulty - 4,
-    );
-  }
-
-  Goal generateDifficulty3(int difficulty) {
-    board = List.generate(8, (_) => List.filled(8, null));
-    int whiteRow = 7;
-    int whiteCol = Random().nextInt(8);
-    board[whiteRow][whiteCol] = ChessPiece(
-      type: pieceType,
-      isWhite: true,
-      imagePath: 'assets/images/white-${pieceType.name}.png',
-    );
-
-    int row1 = whiteRow - 1 - random.nextInt(4);
-    int col1 = whiteCol;
-
-    board[row1][col1] = ChessPiece(
-      type: pieceType,
-      isWhite: false,
-      imagePath: 'assets/images/black-${pieceType.name}.png',
-    );
-
-    col1 =
-        (col1 == 0)
-            ? 1
-            : (col1 == 7)
-            ? 6
-            : (random.nextBool() ? col1 - 1 : col1 + 1);
-
-    board[row1][col1] = ChessPiece(
-      type: pieceType,
-      isWhite: false,
-      imagePath: 'assets/images/black-${pieceType.name}.png',
-    );
-
-    List<ChessPieceType> types = ChessPieceType.values;
-    int placed = 3;
-    while (placed < 10) {
-      int r = random.nextInt(8);
-      int c = random.nextInt(8);
-      if (board[r][c] == null && c != whiteCol && c != col1) {
-        var type = types[random.nextInt(types.length)];
-        board[r][c] = ChessPiece(
-          type: type,
-          isWhite: false,
-          imagePath: 'assets/images/black-${type.name}.png',
-        );
-        placed++;
-      }
-    }
-
-    return generateCheckpointsWithDifficulty(
-      board,
-      whiteRow,
-      whiteCol,
-      pieceType,
-      difficulty - 8,
-    );
-  }
 }
 
 class RoyalBoard extends AbstractBoard {
   RoyalBoard(super.pieceType);
-
-  @override
-  Goal generateDifficulty(int difficulty) {
-    print("sad sam ovdje");
-    print(difficulty);
-    if (difficulty <= 3)
-      return super.generateDifficulty(difficulty);
-    else if (difficulty <= 7) {
-      return generateDifficulty2(difficulty);
-    } else {
-      return generateDifficulty3(difficulty);
-    }
-  }
-
-  Goal generateDifficulty2(int difficulty) {
-    board = List.generate(8, (_) => List.filled(8, null));
-    int whiteRow = 6;
-    int whiteCol = Random().nextInt(8);
-    board[whiteRow][whiteCol] = ChessPiece(
-      type: pieceType,
-      isWhite: true,
-      imagePath: 'assets/images/white-${pieceType.name}.png',
-    );
-
-    int row1 = whiteRow - 1 - random.nextInt(4);
-    int col1 = whiteCol;
-
-    board[row1][col1] = ChessPiece(
-      type: pieceType,
-      isWhite: false,
-      imagePath: 'assets/images/black-${pieceType.name}.png',
-    );
-
-    col1 =
-        (col1 == 0)
-            ? 1
-            : (col1 == 7)
-            ? 6
-            : (random.nextBool() ? col1 - 1 : col1 + 1);
-
-    board[row1][col1] = ChessPiece(
-      type: pieceType,
-      isWhite: false,
-      imagePath: 'assets/images/black-${pieceType.name}.png',
-    );
-
-    List<ChessPieceType> types = ChessPieceType.values;
-    int placed = 3;
-    while (placed < 10) {
-      int r = random.nextInt(8);
-      int c = random.nextInt(8);
-      if (board[r][c] == null && c != whiteCol && c != col1) {
-        var type = types[random.nextInt(types.length)];
-        board[r][c] = ChessPiece(
-          type: type,
-          isWhite: false,
-          imagePath: 'assets/images/black-${type.name}.png',
-        );
-        placed++;
-      }
-    }
-
-    return generateCheckpointsWithDifficulty(
-      board,
-      whiteRow,
-      whiteCol,
-      pieceType,
-      difficulty - 4,
-    );
-  }
-
-  Goal generateDifficulty3(int difficulty) {
-    board = List.generate(8, (_) => List.filled(8, null));
-    int whiteRow = 7;
-    int whiteCol = Random().nextInt(8);
-    board[whiteRow][whiteCol] = ChessPiece(
-      type: pieceType,
-      isWhite: true,
-      imagePath: 'assets/images/white-${pieceType.name}.png',
-    );
-
-    int row1 = whiteRow - 1 - random.nextInt(4);
-    int col1 = whiteCol;
-
-    board[row1][col1] = ChessPiece(
-      type: pieceType,
-      isWhite: false,
-      imagePath: 'assets/images/black-${pieceType.name}.png',
-    );
-
-    col1 =
-        (col1 == 0)
-            ? 1
-            : (col1 == 7)
-            ? 6
-            : (random.nextBool() ? col1 - 1 : col1 + 1);
-
-    board[row1][col1] = ChessPiece(
-      type: pieceType,
-      isWhite: false,
-      imagePath: 'assets/images/black-${pieceType.name}.png',
-    );
-
-    List<ChessPieceType> types = ChessPieceType.values;
-    int placed = 3;
-    while (placed < 10) {
-      int r = random.nextInt(8);
-      int c = random.nextInt(8);
-      if (board[r][c] == null && c != whiteCol && c != col1) {
-        var type = types[random.nextInt(types.length)];
-        board[r][c] = ChessPiece(
-          type: type,
-          isWhite: false,
-          imagePath: 'assets/images/black-${type.name}.png',
-        );
-        placed++;
-      }
-    }
-
-    return generateCheckpointsWithDifficulty(
-      board,
-      whiteRow,
-      whiteCol,
-      pieceType,
-      difficulty - 8,
-    );
-  }
 }
 
 Function isWhite = (int index) {
@@ -665,13 +463,7 @@ bool isMoveInBoard(int row, int col) {
   return row >= 0 && row < 8 && col >= 0 && col < 8;
 }
 
-Future<String> ReadConfig() async {
-  final path = Directory.current.path;
-  final filePath = '$path/assets/data/config.json';
-  return await File(filePath).readAsString();
-}
-
-void FullBoard(List<List<ChessPiece?>> board) {
+void fullBoard(List<List<ChessPiece?>> board) {
   board[1] = List.generate(
     8,
     (i) => ChessPiece(

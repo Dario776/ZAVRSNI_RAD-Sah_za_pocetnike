@@ -92,7 +92,6 @@ class Square extends StatelessWidget {
                 bottom: 2,
                 right: 2,
                 child: Text(
-                  // Choose the number from your logic (pass it via props)
                   '${stepNumber ?? ''}',
 
                   style: Styles.textDefault(

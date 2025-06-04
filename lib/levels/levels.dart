@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zavrsni/components/piece.dart';
-import 'package:zavrsni/game.dart';
+import 'package:zavrsni/game/game.dart';
 import 'package:zavrsni/helper/helper.dart';
 import 'package:zavrsni/levels/tile.dart';
 import 'package:zavrsni/settings/settings.dart';
-import 'package:zavrsni/settings_provider.dart';
+import 'package:zavrsni/settings/settings_provider.dart';
 import 'package:zavrsni/styles.dart';
 
 class LevelSelectionPage extends StatelessWidget {
@@ -77,10 +77,20 @@ class LevelSelectionPage extends StatelessWidget {
                 buildSectionHeader(context, 'Početak'),
                 const SizedBox(height: 12),
                 Text(
-                  'Za početak odaberite figuru koju želite naučiti kretati. Preporučeno je početi s pješakom, a zatim nastaviti s ostalim figurama. Prilikom učenja postoji na dnu gumb "Upute" ako vam je potrebna pomoć.',
+                  'Za početak odaberite figuru koju želite naučiti kretati. Preporučeno je početi s pješakom, a zatim nastaviti s ostalim figurama.',
                   style: Styles.customColorText(
                     context,
                     Styles.textDefault(context),
+                    false,
+                  ),
+                ),
+                Text(
+                  'Prilikom učenja postoji na dnu gumb "Upute" ako vam je potrebna pomoć oko igre.',
+                  style: Styles.customColorText(
+                    context,
+                    Styles.textDefault(
+                      context,
+                    ).copyWith(fontWeight: FontWeight.bold),
                     false,
                   ),
                 ),

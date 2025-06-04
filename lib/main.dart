@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zavrsni/settings_provider.dart';
+import 'package:zavrsni/settings/settings_provider.dart';
 import 'app.dart';
 
 void main() {

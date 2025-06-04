@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zavrsni/styles.dart';
-import 'package:zavrsni/settings_provider.dart';
+import 'package:zavrsni/settings/settings_provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -11,20 +11,24 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   bool _showResetMessage = false;
+
+  void _resetPreferences(SettingsProvider provider) async {
+    await provider.ResetAllPrefs();
+
+    setState(() => _showResetMessage = true);
+
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() => _showResetMessage = false);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final settingsProvider = Provider.of<SettingsProvider>(context);
-    bool isDarkMode = settingsProvider.isDarkMode;
-    bool isOpenDyslexic = settingsProvider.isOpenDyslexic;
-    bool isSound = settingsProvider.isSound;
-    bool isBiggerFontSize = settingsProvider.isBiggerFontSize;
+    final settings = Provider.of<SettingsProvider>(context);
+    final isDarkMode = settings.isDarkMode;
 
     return Scaffold(
       appBar: AppBar(
@@ -40,145 +44,46 @@ class _SettingsPageState extends State<SettingsPage> {
       body: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 600),
+            constraints: const BoxConstraints(maxWidth: 600),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    children: [
-                      isDarkMode
-                          ? Image.asset(
-                            'assets/images/volume-white.png',
-                            width: 24,
-                            height: 24,
-                          )
-                          : Image.asset(
-                            'assets/images/volume.png',
-                            width: 24,
-                            height: 24,
-                          ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          'Zvuk',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ),
-                      Switch(
-                        value: isSound,
-                        onChanged: (bool value) {
-                          settingsProvider.toggleSound(value);
-                        },
-                      ),
-                    ],
+                  _SettingsToggleRow(
+                    label: 'Zvuk',
+                    isDarkMode: isDarkMode,
+                    value: settings.isSound,
+                    iconPath: 'volume',
+                    onChanged: settings.toggleSound,
                   ),
                   const Divider(),
-                  Row(
-                    children: [
-                      isDarkMode
-                          ? Image.asset(
-                            'assets/images/dark-mode-white.png',
-                            width: 24,
-                            height: 24,
-                          )
-                          : Image.asset(
-                            'assets/images/dark-mode.png',
-                            width: 24,
-                            height: 24,
-                          ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          'Tamni način',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ),
-                      Switch(
-                        value: isDarkMode,
-                        onChanged: (bool value) {
-                          settingsProvider.toggleTheme(value);
-                        },
-                      ),
-                    ],
+                  _SettingsToggleRow(
+                    label: 'Tamni način',
+                    isDarkMode: isDarkMode,
+                    value: isDarkMode,
+                    iconPath: 'dark-mode',
+                    onChanged: settings.toggleTheme,
                   ),
                   const Divider(),
-                  Row(
-                    children: [
-                      isDarkMode
-                          ? Image.asset(
-                            'assets/images/open-dyslexic-white.png',
-                            width: 24,
-                            height: 24,
-                          )
-                          : Image.asset(
-                            'assets/images/open-dyslexic.png',
-                            width: 24,
-                            height: 24,
-                          ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          'Font OpenDyslexic',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ),
-                      Switch(
-                        value: isOpenDyslexic,
-                        onChanged: (bool value) {
-                          settingsProvider.toggleFontName(value);
-                        },
-                      ),
-                    ],
+                  _SettingsToggleRow(
+                    label: 'Font OpenDyslexic',
+                    isDarkMode: isDarkMode,
+                    value: settings.isOpenDyslexic,
+                    iconPath: 'open-dyslexic',
+                    onChanged: settings.toggleFontName,
                   ),
                   const Divider(),
-                  Row(
-                    children: [
-                      isDarkMode
-                          ? Image.asset(
-                            'assets/images/font-size-white.png',
-                            width: 24,
-                            height: 24,
-                          )
-                          : Image.asset(
-                            'assets/images/font-size.png',
-                            width: 24,
-                            height: 24,
-                          ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          'Veliki font',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ),
-                      Switch(
-                        value: isBiggerFontSize,
-                        onChanged: (bool value) {
-                          settingsProvider.toggleFontSize(value);
-                        },
-                      ),
-                    ],
+                  _SettingsToggleRow(
+                    label: 'Veliki font',
+                    isDarkMode: isDarkMode,
+                    value: settings.isBiggerFontSize,
+                    iconPath: 'font-size',
+                    onChanged: settings.toggleFontSize,
                   ),
-
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () async {
-                      await settingsProvider.ResetAllPrefs();
-
-                      setState(() {
-                        _showResetMessage = true;
-                      });
-
-                      Future.delayed(const Duration(seconds: 2), () {
-                        if (mounted) {
-                          setState(() {
-                            _showResetMessage = false;
-                          });
-                        }
-                      });
-                    },
+                    onPressed: () => _resetPreferences(settings),
                     child: Text(
                       'Resetiraj napredak i postavke',
                       style: Styles.customColorText(
@@ -210,6 +115,39 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SettingsToggleRow extends StatelessWidget {
+  final String label;
+  final bool value;
+  final bool isDarkMode;
+  final String iconPath;
+  final ValueChanged<bool> onChanged;
+
+  const _SettingsToggleRow({
+    required this.label,
+    required this.value,
+    required this.isDarkMode,
+    required this.iconPath,
+    required this.onChanged,
+  });
+
+  String get _iconAsset =>
+      'assets/images/$iconPath${isDarkMode ? '-white' : ''}.png';
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Image.asset(_iconAsset, width: 24, height: 24),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(label, style: Theme.of(context).textTheme.bodyMedium),
+        ),
+        Switch(value: value, onChanged: onChanged),
+      ],
     );
   }
 }

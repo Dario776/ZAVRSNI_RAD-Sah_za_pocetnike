@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:zavrsni/components/piece.dart';
 import 'dart:math';
 import 'package:zavrsni/styles.dart';
+import 'package:flutter/services.dart';
 
 String toChessCoords(num row, num col) {
   const files = 'abcdefgh';
@@ -50,10 +51,9 @@ Widget buildSectionHeader(BuildContext context, String title) {
       title,
       style: Styles.customColorText(
         context,
-        Styles.headerLarge(context).copyWith(
-          fontWeight: FontWeight.bold, // Bold text
-          letterSpacing: 1.5,
-        ),
+        Styles.headerLarge(
+          context,
+        ).copyWith(fontWeight: FontWeight.bold, letterSpacing: 1.5),
         true,
       ),
     ),
@@ -160,10 +160,9 @@ abstract class AbstractBoard {
       imagePath: 'assets/images/white-${pieceType.name}.png',
     );
 
-    // Place 15-18 black pieces randomly
     List<ChessPieceType> types = ChessPieceType.values;
     int placed = 0;
-    int maxPieces = 15 + Random().nextInt(4); // up to 18
+    int maxPieces = 15 + Random().nextInt(4);
 
     while (placed < maxPieces) {
       int r = Random().nextInt(8);
@@ -237,19 +236,17 @@ Goal generateSparseCheckpoints(
     if (possibleMoves.isEmpty) break;
 
     List<int> move = possibleMoves[random.nextInt(possibleMoves.length)];
-
     currentRow = move[0];
     currentCol = move[1];
-    visited.add('$currentRow-$currentCol');
 
+    visited.add('$currentRow-$currentCol');
     path.add(Point(currentRow, currentCol));
 
     if (pieceType == ChessPieceType.pawn && currentRow == 0) break;
   }
 
   Set<int> chosenSteps = {};
-
-  while (chosenSteps.length < 5) {
+  while (chosenSteps.length < min(5, path.length)) {
     chosenSteps.add(random.nextInt(path.length));
   }
 

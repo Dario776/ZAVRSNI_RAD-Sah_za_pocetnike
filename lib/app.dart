@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zavrsni/home/home_page.dart';
-import 'package:zavrsni/settings_provider.dart';
+import 'package:zavrsni/settings/settings_provider.dart';
 import 'package:provider/provider.dart';
 import 'styles.dart';
 

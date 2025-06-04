@@ -29,6 +29,7 @@ class Game extends StatefulWidget {
 }
 
 class _GameState extends State<Game> {
+  final AudioPlayer _audioPlayer = AudioPlayer();
   bool isSound = true;
   int gameDifficulty = 0;
   Goal goal = Goal([], 0);
@@ -148,9 +149,13 @@ class _GameState extends State<Game> {
   }
 
   Future<void> playSound(String name) async {
-    if (isSound) {
-      final player = AudioPlayer();
-      await player.play(AssetSource('sounds/$name'));
+    if (!isSound) return;
+
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.play(AssetSource('sounds/$name'));
+    } catch (e) {
+      debugPrint('Failed to play sound: $e');
     }
   }
 

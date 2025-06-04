@@ -152,7 +152,6 @@ class _GameState extends State<Game> {
     if (!isSound) return;
 
     try {
-      await _audioPlayer.stop();
       await _audioPlayer.play(AssetSource('sounds/$name'));
     } catch (e) {
       debugPrint('Failed to play sound: $e');

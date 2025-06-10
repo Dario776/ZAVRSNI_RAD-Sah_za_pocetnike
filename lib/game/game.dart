@@ -450,7 +450,7 @@ class _GameState extends State<Game> {
         ),
         const SizedBox(height: 24),
         _buildBoardAndButtons(),
-        const SizedBox(height: 36),
+        const SizedBox(height: 60),
       ],
     );
   }
@@ -487,7 +487,7 @@ class _GameState extends State<Game> {
           ),
           const SizedBox(height: 24),
           _buildBoardAndButtons(),
-          const SizedBox(height: 24),
+          const SizedBox(height: 48),
         ],
       ),
     );

@@ -8,7 +8,7 @@ class Styles {
   static const _textSizeDefault = 16.0;
   static const _textSizeSmall = 12.0;
   static const horizontalPaddingDefault = 12.0;
-  static const biggerFontSizeMultiplier = 1.2;
+  static const biggerFontSizeMultiplier = 1.3;
 
   static final Color primaryColor = Color.fromARGB(255, 237, 244, 242);
   static final Color secondaryColor = Color.fromARGB(255, 49, 71, 58);

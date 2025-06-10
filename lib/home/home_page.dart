@@ -44,15 +44,14 @@ class InfoPage extends StatelessWidget {
                 buildSectionHeader(context, '"Šah za početnike"'),
                 const SizedBox(height: 12),
                 Text(
-                  'Ova edukativna aplikacija pomaže korisnicima da nauče kretanje šahovskih figura.',
+                  'Ova edukativna aplikacija pomaže korisnicima da nauče kretanja šahovskih figura.',
                   style: Styles.textDefault(context),
                 ),
                 const SizedBox(height: 24),
                 buildSectionHeader(context, 'O aplikaciji'),
                 const SizedBox(height: 12),
                 Text(
-                  'Aplikacija je razvijena u sklopu završnog rada na Fakultetu elektrotehnike i računarstva '
-                  'Sveučilišta u Zagrebu, ak. god. 2024./2025.',
+                  'Aplikacija je razvijena u sklopu završnog rada na Sveučilištu u Zagrebu Fakultetu elektrotehnike i računarstva, ak. god. 2024./2025.',
                   style: Styles.textDefault(context),
                 ),
                 const SizedBox(height: 24),
@@ -81,13 +80,13 @@ class InfoPage extends StatelessWidget {
                         children: [
                           attributedLine(
                             context,
-                            '- OpenSans: ',
-                            '\nhttps://fonts.google.com/',
+                            '- OpenSans: \n',
+                            'https://fonts.google.com/',
                           ),
                           attributedLine(
                             context,
-                            '- OpenDyslexic: ',
-                            '\nhttps://opendyslexic.org/',
+                            '- OpenDyslexic: \n',
+                            'https://opendyslexic.org/',
                           ),
                         ],
                       ),
@@ -104,18 +103,18 @@ class InfoPage extends StatelessWidget {
                         children: [
                           attributedLine(
                             context,
-                            '- Šahovske figure: ',
-                            '\nhttps://greenchess.net/',
+                            '- Šahovske figure: \n',
+                            'https://greenchess.net/',
                           ),
                           attributedLine(
                             context,
-                            '- Ikone u postavkama: ',
-                            '\nhttps://www.flaticon.com/',
+                            '- Ikone u postavkama: \n',
+                            'https://www.flaticon.com/',
                           ),
                           attributedLine(
                             context,
-                            '- Logo: ',
-                            '\nhttps://www.freepik.com/',
+                            '- Logo: \n',
+                            'https://www.freepik.com/',
                           ),
                         ],
                       ),
@@ -132,23 +131,23 @@ class InfoPage extends StatelessWidget {
                         children: [
                           attributedLine(
                             context,
-                            '- Kretnja figure - button 17.wav by bubaproducer: ',
-                            '\nhttps://freesound.org/s/107135/',
+                            '- Kretnja figure - button 17.wav by bubaproducer: \n',
+                            'https://freesound.org/s/107135/',
                           ),
                           attributedLine(
                             context,
-                            '- Nedozvoljen potez - Error by Kastenfrosch: ',
-                            '\nhttps://freesound.org/s/521973/',
+                            '- Nedozvoljen potez - Error by Kastenfrosch: \n',
+                            'https://freesound.org/s/521973/',
                           ),
                           attributedLine(
                             context,
-                            '- Reset razine - tile shuffle.wav by element4rt: ',
-                            '\nhttps://freesound.org/s/454848/',
+                            '- Reset razine - tile shuffle.wav by element4rt: \n',
+                            'https://freesound.org/s/454848/',
                           ),
                           attributedLine(
                             context,
-                            '- Sljedeća razina - magic_game_win_success.wav by MLaudio: ',
-                            '\nhttps://freesound.org/s/615099/',
+                            '- Sljedeća razina - magic_game_win_success.wav by MLaudio: \n',
+                            'https://freesound.org/s/615099/',
                           ),
                         ],
                       ),

@@ -77,7 +77,7 @@ class LevelSelectionPage extends StatelessWidget {
                 buildSectionHeader(context, 'Početak'),
                 const SizedBox(height: 12),
                 Text(
-                  'Za početak odaberite figuru koju želite naučiti kretati. Preporučeno je početi s pješakom, a zatim nastaviti s ostalim figurama.',
+                  'Za početak odaberite za koju šahovsku figuru želite naučiti kretnje. Preporučeno je početi s pješakom, a zatim nastaviti s ostalim figurama.',
                   style: Styles.customColorText(
                     context,
                     Styles.textDefault(context),
@@ -116,9 +116,9 @@ class LevelSelectionPage extends StatelessWidget {
                         ],
                         lessonDescription: [
                           'Pješak je naizgled najjednostavnija figura u šahu, ali zapravo ima najviše pravila. Smije se kretati samo JEDNO polje unaprijed, osim na svom prvom potezu kada se smije kretati JEDNO ili čak DVA polja unaprijed, ali samo ako su polja na koja se pomiče prazna. Pješak se može kretati i za JEDNO dijagonalno polje naprijed (ulijevo ili udesno) samo kada time uzima („pojede“) protivničku figuru. Ova pravila ćemo proći kroz razine, za one koje žele znati više postoje još 2 pravila.',
-                          'Ako pješak dođe do zadnjeg polja ploče, tj. do reda najbližeg protivničkoj strani, može se zamijeniti  za bilo koju drugu figuru osim kralja i ta akcija naziva se "promocija pješaka".',
+                          'Ako pješak dođe do zadnjeg polja ploče, tj. do reda najbližeg protivničkoj strani, može se zamijeniti za bilo koju drugu figuru osim kralja i ta akcija naziva se "promocija pješaka".',
                           'Postoji i jedan poseban potez pješaka koji se naziva "en passant", što u prijevodu s francuskog jezika znači "u prolazu", a koji se može izvesti samo u određenim situacijama. Ako se pješak pomakne dva polja unaprijed i završi paralelno pored protivničkog pješaka, taj protivnički pješak može ga uzeti kao da je pomaknut samo jedno polje unaprijed.',
-                          'Pješaci su najjači kada su u grupi jer zajedno pokrivaju više polja i mogu se međusobno štititi. Iznimno su važni u završnicama igre jer mogu postati jake figure kada se promoviranjem zamijene  u dame. Ima ih puno na ploči i najčešće su prve figure koje se pomiču u igri. Također su najčešće žrtvovane figure u igri jer se često koriste za kontrolu centra i otvaranje prostora za druge figure.',
+                          'Pješaci su najjači kada su u grupi jer zajedno pokrivaju više polja i mogu se međusobno štititi. Iznimno su važni u završnicama igre jer mogu postati jake figure kada se promoviranjem zamijene u dame. Ima ih puno na ploči i najčešće su prve figure koje se pomiču u igri. Također su najčešće žrtvovane figure u igri jer se često koriste za kontrolu centra i otvaranje prostora za druge figure.',
                         ],
                       ),
                       imagePath:
@@ -133,7 +133,7 @@ class LevelSelectionPage extends StatelessWidget {
                         lessonTitle: 'Lovac',
                         lessonSubtitle: ['Dijagonale', 'U igri'],
                         lessonDescription: [
-                          'Lovac je prilično lagana figura za naučiti. Smije se kretati koliko želi dijagonalno po ploči, ali samo po slobodnim poljima. Nailaskom na prvu protivničku figuru na bilo kojoj od 4 dijagonale, lovac je može "pojesti". Kretanja samo po dijagonalama ploče znači da je lovac ograničen na kretanje po  poljima samo jedne boje. Ako je na bijelom polju, može se kretati samo po bijelim poljima i obrnuto.',
+                          'Lovac je prilično lagana figura za naučiti. Smije se kretati koliko želi dijagonalno po ploči, ali samo po slobodnim poljima. Nailaskom na prvu protivničku figuru na bilo kojoj od 4 dijagonale, lovac je može "pojesti". Kretanje samo po dijagonalama ploče znači da je lovac ograničen na polja samo jedne boje. Ako je na bijelom polju, može se kretati samo po bijelim poljima i obrnuto.',
                           'Lovci su u šahu snažni kada su u paru jer zajedno pokrivaju obje boje polja. Jaki su i kada je ploča otvorena, tj. kada je većina pješaka pomaknuta i nema prepreka između njih.',
                         ],
                       ),
@@ -149,8 +149,8 @@ class LevelSelectionPage extends StatelessWidget {
                         lessonTitle: 'Skakač',
                         lessonSubtitle: ['Skakanje', 'U igri'],
                         lessonDescription: [
-                          'Skakač je jedinstvena šahovska figura jer je jedina koja može preskakati druge figure. Sve ostale figure se kreću po slobodnim poljima, dok skakač može preskočiti sve figure koje se nalaze između njega i polja na koje se pomiče. Skakač se može kretati u obliku slova "L", tj. krećući se DVA polja u bilo kojem od 4 smjera te zatim na JEDNO polje ili ulijevo ili udesno.\n\nTo znači da ako se skakač nalazi u sredini ploče može skočiti na čak 8 različitih polja, a ako se nalazi u kutu može skočiti samo na 2 polja.',
-                          'Skakač je najmoćniji kada je u sredini ploče jer može pokriti više polja i imati više mogućnosti za napad. Vrlo je koristan u kombinaciji s drugim figurama, pogotovo kod napada protivničkog kralja s damom ili kod obrane vlastitog kralja. Voli zatvorene pozicije s puno pješaka jer može lako preskočiti prepreke i doći do najoptimalnijih polja dok ostale figure ostaju u blokadi.',
+                          'Skakač je jedinstvena šahovska figura jer je jedina koja može preskakati druge figure. Sve ostale figure se kreću po slobodnim poljima, dok skakač može preskočiti sve figure koje se nalaze između njega i polja na koje se pomiče. Skakač se mora kretati u obliku slova "L", tj. krećući se DVA polja u bilo kojem od 4 smjera te zatim na JEDNO polje ili ulijevo ili udesno.\n\nTo znači da ako se skakač nalazi u sredini ploče može skočiti na čak 8 različitih polja, a ako se nalazi u kutu može skočiti samo na 2 polja.',
+                          'Skakač je najmoćniji kada je u sredini ploče jer može pokriti više polja i imati više mogućnosti za napad. Vrlo je koristan u kombinaciji s drugim figurama, pogotovo kod napada protivničkog kralja s damom ili kod obrane vlastitog kralja. Voli zatvorene pozicije s puno pješaka jer može lako preskočiti prepreke i doći do optimalnih polja dok ostale figure ostaju u blokadi.',
                         ],
                       ),
                       imagePath:
@@ -187,7 +187,7 @@ class LevelSelectionPage extends StatelessWidget {
                         lessonDescription: [
                           'Kralj je najvažnija figura u šahu jer je cilj igre šaha matirati protivničkog kralja, tj. staviti ga u poziciju gdje je pod napadom i gdje protivnik niti jednim svojim potezom ne može spriječiti gubljenje svog kralja. Kralj se može kretati po samo JEDNO polje u bilo kojem smjeru, tj. lijevo, desno, naprijed, nazad i dijagonalno. Ne može se kretati na polje koje je pod napadom protivničke figure jer bi time kralj upao u "šah", tj. mogućnost da ga protivnička figura „pojede“ u sljedećem potezu. Ako naiđe na prvu protivničku figuru, može je "pojesti" i zauzeti njeno polje. U okviru ovog učenja, jednostavnosti radi nećemo se baviti slučajevima kada je kralj u "šahu".',
                           'Kralj se može pomaknuti dva polja u jednom potezu samo ako se radi o posebnom potezu koji se zove "rokada" (rohada ili rošada). Rokada je potez koji se može izvesti samo kada su ispunjeni određeni uvjeti. Ako se figure kralja i topa koje sudjeluju u rokadi nisu nijednom pomakle tijekom igre i ako između njih nema drugih figura, kralj se pomiče dva polja prema topu, a top preskače kralja i stane do kralja s njegove druge strane s pretpostavkom da kralj nije u "šahu" i tijekom kretnje ne upadne u "šah". Postoji velika i mala rokada, velika se izvodi s topom dalje od kralja, a mala s topom bliže kralju. Ovaj potez se koristi za zaštitu kralja i aktivaciju topa.',
-                          'Kralja je najbolje čuvati u sigurnoj poziciji, tj. iza svojih figura i daleko od protivničkih figura, najoptimalnije u rokadi. U završnicama igre, kralj postaje jedna od najbitnijih figura jer ne postoji više toliko opasnosti za njega, a od velike je pomoći za sigurnost i promociju pješaka.',
+                          'Kralja je najbolje čuvati u sigurnoj poziciji, tj. iza svojih figura i daleko od protivničkih figura, optimalno u rokadi. U završnicama igre, kralj postaje jedna od najbitnijih figura jer ne postoji više toliko opasnosti za njega, a od velike je pomoći za sigurnost i promociju pješaka.',
                         ],
                       ),
                       imagePath:
